@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Molecule builder</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/6.7.0/css/flag-icons.min.css">
+
+    <!-- Google Translate Widget -->
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'en,pt',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        }, 'google_translate_element');
+      }
+    </script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</head>
+<body>
+    <!-- Google Translate Widget (oculto) -->
+    <div id="google_translate_element" style="display:none;"></div>
+
+    <h1 style="text-align: center;">Molecule builder</h1>
+
+    <label for="elementos">Set element:</label><br>
+    <input type="text" id="elementos" placeholder="Ex: H O H">
+    <button onclick="BuscarMolecula()">generate molecule</button>
+    <script>
+        let idiomaAtual = 'en';
+
+        async function BuscarMolecula(){
+            let formula = document.getElementById("elementos").value;
+            let resultado = await window.pywebview.api.buscar_molecula(formula);
+
+            let texto = resultado.info.replace(/\n/g, '<br>');
+            // Traduz se necessário
+            if (idiomaAtual !== 'en') {
+                texto = await window.pywebview.api.traduzir(resultado.info, idiomaAtual);
+                texto = texto.replace(/\n/g, '<br>');
+            }
+            document.getElementById('info-text').innerHTML = texto;
+            document.getElementById('desenho-area').innerHTML = `<img src="${resultado.image}" alt="Molécula">`;
+        }
+
+        async function changeLanguage(lang) {
+            idiomaAtual = lang;
+            // Atualiza o texto já exibido, se houver
+            let info = document.getElementById('info-text').innerText;
+            if (info) {
+                let textoOriginal = info.replace(/<br>/g, '\n');
+                if (lang === 'en') {
+                    // Rebusca a molécula para garantir texto original em inglês
+                    BuscarMolecula();
+                } else {
+                    let traduzido = await window.pywebview.api.traduzir(textoOriginal, lang);
+                    document.getElementById('info-text').innerHTML = traduzido.replace(/\n/g, '<br>');
+                }
+            }
+        }
+    </script>
+
+    <div id="mol-info">
+        <h3>molecule information:</h3>
+        <p id="info-text"></p>
+    </div>
+
+    <div id="mol-desenho">
+        <h3>molecule form:</h3>
+        <div id="desenho-area"></div>
+    </div>
+</body>
+
+<footer style="background-color:#333; color:white; padding:10px; text-align:center;">
+    <!-- Bandeiras -->
+    <span class="fi fi-br" style="font-size:2rem; margin:0 10px; cursor:pointer;" onclick="changeLanguage('pt')"></span>
+    <span class="fi fi-us" style="font-size:2rem; margin:0 10px; cursor:pointer;" onclick="changeLanguage('en')"></span>
+
+    <!-- E-mail -->
+    <a href="mailto:caeldavidsoares@gmail.com" style="color:white; margin:0 10px;">
+        <i class="fa-solid fa-envelope"></i>
+    </a>
+
+    <!-- GitHub -->
+    <a href="https://github.com/cael-david" target="_blank" style="color:white; margin:0 10px;">
+        <i class="fa-brands fa-github"></i>
+    </a>
+</footer>
+
+

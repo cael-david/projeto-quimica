@@ -1,0 +1,44 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #000000;
+}
+
+#mol-info, #mol-desenho {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    color: white;
+}
+
+input[type="text"] {
+    width: 200px;
+    padding: 5px;
+    font-size: 16px;
+}
+
+button {
+padding: 6px 12px;
+font-size: 16px;
+background-color: #000000;
+color: white;
+border: none;
+border-radius: 4px;
+cursor: pointer;
+transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: rgb(87, 32, 88);
+
+}
+button:active{
+    background-color: rgb(255, 255, 255);
+
+}
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
