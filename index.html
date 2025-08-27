@@ -1,33 +1,19 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"> 
     <title>Molecule builder</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/6.7.0/css/flag-icons.min.css">
-
-    <!-- Google Translate Widget -->
-    <script type="text/javascript">
-      function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-          pageLanguage: 'en',
-          includedLanguages: 'en,pt',
-          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-        }, 'google_translate_element');
-      }
-    </script>
-    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </head>
 <body>
-    <!-- Google Translate Widget (oculto) -->
-    <div id="google_translate_element" style="display:none;"></div>
+    <h1 id="titulo">Molecule builder</h1>
 
-    <h1 style="text-align: center;">Molecule builder</h1>
-
-    <label for="elementos">Set element:</label><br>
+    <label for="elementos" id="label-elementos">Set element:</label><br>
     <input type="text" id="elementos" placeholder="Ex: H O H">
-    <button onclick="BuscarMolecula()">generate molecule</button>
+    <button id="geradormolecula" onclick="BuscarMolecula()">generate molecule</button>
+
     <script>
         let idiomaAtual = 'en';
 
@@ -41,34 +27,53 @@
                 texto = await window.pywebview.api.traduzir(resultado.info, idiomaAtual);
                 texto = texto.replace(/\n/g, '<br>');
             }
+
             document.getElementById('info-text').innerHTML = texto;
             document.getElementById('desenho-area').innerHTML = `<img src="${resultado.image}" alt="Molécula">`;
         }
 
         async function changeLanguage(lang) {
             idiomaAtual = lang;
-            // Atualiza o texto já exibido, se houver
+
+            // Troca os textos fixos do HTML
+            if (lang === 'pt') {
+                document.getElementById("titulo").innerText = "Construtor de Moléculas";
+                document.getElementById("label-elementos").innerText = "Definir elemento:";
+                document.getElementById("geradormolecula").innerText = "Gerar molécula";
+                document.getElementById("info-title").innerText = "Informações da molécula:";
+                document.getElementById("form-title").innerText = "Forma da molécula:";
+            } else {
+                document.getElementById("titulo").innerText = "Molecule builder";
+                document.getElementById("label-elementos").innerText = "Set element:";
+                document.getElementById("geradormolecula").innerText = "Generate molecule";
+                document.getElementById("info-title").innerText = "Molecule information:";
+                document.getElementById("form-title").innerText = "Molecule form:";
+            }
+
+            // Atualiza o texto dinâmico já exibido (se houver)
             let info = document.getElementById('info-text').innerText;
             if (info) {
                 let textoOriginal = info.replace(/<br>/g, '\n');
                 if (lang === 'en') {
-                    // Rebusca a molécula para garantir texto original em inglês
-                    BuscarMolecula();
+                    BuscarMolecula(); // recarrega em inglês
                 } else {
                     let traduzido = await window.pywebview.api.traduzir(textoOriginal, lang);
                     document.getElementById('info-text').innerHTML = traduzido.replace(/\n/g, '<br>');
                 }
             }
         }
+
+        // Inicializa botão no idioma atual
+        document.getElementById("geradormolecula").innerText = "Generate molecule";
     </script>
 
     <div id="mol-info">
-        <h3>molecule information:</h3>
+        <h3 id="info-title">Molecule information:</h3>
         <p id="info-text"></p>
     </div>
 
     <div id="mol-desenho">
-        <h3>molecule form:</h3>
+        <h3 id="form-title">Molecule form:</h3>
         <div id="desenho-area"></div>
     </div>
 </body>
@@ -88,5 +93,3 @@
         <i class="fa-brands fa-github"></i>
     </a>
 </footer>
-
-

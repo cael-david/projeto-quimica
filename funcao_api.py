@@ -4,7 +4,7 @@ from googletrans import Translator
 
 class Api: 
     def buscar_molecula(self, input):
-        formula = input.replace(" ", "").upper()
+        formula = input.replace(" ", "")
 
         try:
             resultados = pcp.get_compounds(formula, 'formula')
